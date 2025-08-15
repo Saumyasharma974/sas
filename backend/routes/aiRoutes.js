@@ -2,13 +2,18 @@ import express from "express";
 
 import auth from "../middleware/authMiddleware.js";
 import { explainCode, generateImage, summarizeText, translateText } from "../controller/aiController.js";
+import { checkCredits } from "../middleware/checkCredit.js";
+import { purchaseCredits } from "../controller/purchaseCreditController.js";
 
 
 const router = express.Router();
 
-router.post("/summarize", auth, summarizeText);
-router.post("/translate", auth, translateText);
-router.post("/explain-code", auth, explainCode);
-router.post("/generate-image", auth, generateImage);
+router.post("/summarize", auth, checkCredits, summarizeText);
+router.post("/translate", auth, checkCredits, translateText);
+router.post("/explain-code", auth, checkCredits, explainCode);
+router.post("/generate-image", auth, checkCredits, generateImage);
+
+router.post("/purchase", auth, purchaseCredits);
+
 
 export default router;
