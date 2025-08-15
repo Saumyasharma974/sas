@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 export default function Login() {
+  const navigate=useNavigate()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin =async (e) => {
     e.preventDefault();
-    console.log({ email, password }); // Replace with backend call later
+    const userData={email,password}
+    const response=await axios.post('http://localhost:3000/api/auth/login',userData)
+    navigate('/summarizer')
+    console.log(response.data);
+
   };
 
   return (
