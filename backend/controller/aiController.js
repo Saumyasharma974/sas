@@ -73,6 +73,34 @@ export const explainCode = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, { explanation: result }, "Code explained"));
 });
 
+export const debugCode = asyncHandler(async (req, res) => {
+  const { code } = req.body;
+  if (!code) throw new ApiError(400, "Code is required");
+
+  const result = await callGemini(
+    "gemini-2.0-flash",
+    `Analyze the following code:\n\n${code}\n\n
+    1. List the bugs or issues found (in detail).
+    2. Provide a corrected version of the code.`
+  );
+
+  // Gemini will return text → we split by markers
+  const [bugs, correctedCode] = result.split("2. Corrected Version:").map(s => s.trim());
+
+  await deductCredit(req.user._id, 2);
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      { 
+        bugsFound: bugs || "No bugs detected", 
+        correctedCode: correctedCode || "No corrections provided" 
+      },
+      "Code analyzed successfully"
+    )
+  );
+});
+
 // 4. Image Generator
 export const generateImage = asyncHandler(async (req, res) => {
   const { prompt } = req.body;

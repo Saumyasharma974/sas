@@ -8,6 +8,7 @@ import ImageGenerator from "./pages/ImageGenerator";
 import CodeExplainer from "./pages/CodeExplainer";
 import Translator from "./pages/Transalate";
 import Profile from "./pages/Profile";
+import CodeDebugger from "./pages/DebugCode";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/code-explainer" element={<CodeExplainer />} />
         <Route path="/translator" element={<Translator />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/debugger" element={<CodeDebugger/>}/>
       </Routes>
     </Router>
   );

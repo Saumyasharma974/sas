@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Home, FileText, Image, Code, Languages, User } from "lucide-react";
+import { Home, FileText, Image, Code, Languages, User ,Bug} from "lucide-react";
 
 const navItems = [
   { to: "/summarizer", label: "Summarizer", icon: FileText },
@@ -8,6 +8,7 @@ const navItems = [
   { to: "/code-explainer", label: "Code Explainer", icon: Code },
   { to: "/translator", label: "Translator", icon: Languages },
   { to: "/profile", label: "Profile", icon: User },
+  { to: "/debugger", label: "Debugger", icon: Bug },
 ];
 
 export default function Sidebar() {

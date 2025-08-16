@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../componets/ui";
-import { Zap, Code, Image, Languages } from "lucide-react";
+import { Zap, Code, Image, Languages,Bug } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -36,10 +36,10 @@ export default function LandingPage() {
     }
   };
   React.useEffect(() => {
-  if (localStorage.getItem("token")) {
-    setLogin(true);
-  }
-}, []);
+    if (localStorage.getItem("token")) {
+      setLogin(true);
+    }
+  }, []);
 
 
   const handleLogout = () => {
@@ -135,6 +135,12 @@ export default function LandingPage() {
                 title: "Code Explainer",
                 desc: "Understand complex code in plain English.",
               },
+              {
+                icon: Bug, // use lucide-react's Bug icon
+                title: "Debug",
+                desc: "Find and fix bugs in your code instantly with AI-powered debugging.",
+              }
+              ,
               {
                 icon: Image,
                 title: "Image Generator",
