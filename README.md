@@ -1,7 +1,3 @@
-Got it 👍 — since your **image generation uses ClipDrop API** (not Gemini), we’ll reflect that in the README.
-Here’s the updated version with a dedicated **Image Generation** section:
-
----
 
 # 🚀 AI SaaS App
 
