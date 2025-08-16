@@ -1,31 +1,37 @@
 
-# 🚀 AI SaaS App
+# 🚀 AI SaaS Platform
 
-This project is an **AI-powered SaaS platform** built with **Node.js, Express, Gemini API, and ClipDrop API**.
-It includes multiple AI utilities like **Code Explanation, Bug Detection & Correction, Translation, Summarization, Blog Generation, Image Generation, and more**.
-
----
+An AI-powered SaaS platform built with **Node.js + Express (Backend)** and **React + Tailwind (Frontend)**, integrated with multiple AI APIs.
 
 ## ✨ Features
 
-* ⚡ **Fast**: Lightning-fast AI responses with minimal wait time.
-* 🧑‍💻 **Code Explanation**: Get clear explanations of any code snippet.
-* 🐞 **Debug & Fix Code**: Detect bugs in your code and receive corrected versions.
-* 🌍 **Translation**: Translate text into multiple languages.
-* 📝 **Summarizer**: Summarize large texts into concise versions.
-* 🖼 **Image Generator (ClipDrop API)**: Generate high-quality AI images using ClipDrop.
-
----
+* 🔹 **Code Explainer** – Explain complex code in simple words.
+* 🔹 **Bug Finder & Fixer** – Debug and suggest corrections for code.
+* 🔹 **Translator** – Translate text into multiple languages.
+* 🔹 **Summarizer** – Summarize long texts into short notes.
+* 🔹 **Image Generator (ClipDrop API)** – Generate AI-powered images.
+* 🔹 **Fast Response** – Powered by Google Gemini API for lightning-fast answers.
 
 ## 🛠️ Tech Stack
 
-* **Backend**: Node.js, Express.js
-* **AI Models**: Google Gemini API (text tasks), ClipDrop API (image generation)
-* **Validation**: Joi
-* **Error Handling**: Custom `ApiError`, `ApiResponse`, and `asyncHandler`
+### Backend (Node.js + Express)
 
----
+* `express` – API framework
+* `joi` – Input validation
+* `axios` – API requests
+* `asyncHandler` – Centralized async error handling
+* `ApiError` – Standardized error responses
+* `ApiResponse` – Standardized success responses
+
+### Frontend (React + Tailwind)
+
+* `react` – UI library
+* `react-dom` – Rendering
+* `react-router-dom` – Routing
+* `axios` – API calls
+* `lucide-react` – Icons
+* `tailwindcss` – Styling (configured with Vite + `@tailwindcss/vite`)
 
 
 
-Do you also want me to add a **section showing how to set up API keys in `.env`** for both Gemini and ClipDrop?
+Would you like me to also create a **folder structure diagram** (like `frontend/`, `backend/`, `controllers/`, `middlewares/`, etc.) in the README so that contributors instantly know where things go?
