@@ -9,7 +9,16 @@ export default function Login() {
   const handleLogin =async (e) => {
     e.preventDefault();
     const userData={email,password}
-    const response=await axios.post('http://localhost:3000/api/auth/login',userData)
+    const response=await axios.post('http://localhost:3000/api/auth/login',userData,
+      {
+        withCredentials: true
+      }
+    )
+    console.log("Login response:", response.data.data.token);
+    console.log("User ID:", response.data.data.id);
+    localStorage.setItem('token', response.data.data.token)
+    localStorage.setItem('userId', response.data.data.id)
+    localStorage.setItem('email',response.data.data.email)
     navigate('/summarizer')
     console.log(response.data);
 

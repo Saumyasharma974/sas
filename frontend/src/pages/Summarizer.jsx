@@ -1,18 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DashboardLayout from "../componets/DashboardLayout";
 import { Card, Textarea, Button } from "../componets/ui";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Summarizer() {
+  const navigate = useNavigate();
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
+
+  // ✅ check token once when component mounts
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleSummarize = () => {
     if (!text.trim()) {
       alert("Please enter some text to summarize.");
       return;
     }
-    // Fake AI response for now
-    setSummary("This is a short placeholder summary of your provided text.");
+
+    axios
+      .post(
+        "http://localhost:3000/api/ai/summarize",
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // send token
+          },
+          withCredentials: true, // send cookie also
+        }
+      )
+      .then((response) => {
+        console.log("Summary response:", response.data.data.summary);
+        setSummary(response.data.data.summary);
+      })
+      .catch((error) => {
+        console.error("Error summarizing text:", error);
+        alert("Failed to summarize text. Please try again.");
+      });
   };
 
   return (

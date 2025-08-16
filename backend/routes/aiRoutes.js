@@ -8,7 +8,7 @@ import { purchaseCredits } from "../controller/purchaseCreditController.js";
 
 const router = express.Router();
 
-router.post("/summarize", auth, checkCredits, summarizeText);
+router.post("/summarize",auth,checkCredits, summarizeText);
 router.post("/translate", auth, checkCredits, translateText);
 router.post("/explain-code", auth, checkCredits, explainCode);
 router.post("/generate-image", auth, checkCredits, generateImage);

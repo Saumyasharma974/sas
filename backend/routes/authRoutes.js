@@ -7,6 +7,7 @@ import { registerSchema, loginSchema } from "../validators/authValidators.js";
 import { login, register } from "../controller/userController.js";
 import { validate } from "../middleware/validate.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import userModel from "../models/userModel.js";
 ;
 
 const router = express.Router();
@@ -36,5 +37,10 @@ router.post(
     res.json({ message: "Logged out successfully" });
   })
 );
+
+router.get('/me/:id',asyncHandler(async(req,res)=>{
+  const user=await userModel.findById(req.params.id).select('-password');
+  res.json({user});
+}))
 
 export default router;

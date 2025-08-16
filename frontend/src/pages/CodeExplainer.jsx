@@ -1,13 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../componets/DashboardLayout";
 import { Card, Textarea, Button } from "../componets/ui";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function CodeExplainer() {
+    const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [explanation, setExplanation] = useState("");
+    useEffect(() => {
+      if (!localStorage.getItem("token")) {
+        navigate("/login");
+      }
+    }, [navigate]);
+  
 
-  const handleExplain = () => {
-    setExplanation("This is a placeholder explanation of the provided code.");
+  const handleExplain = async () => {
+    if (!code.trim()) {
+      alert("Please enter some code to explain.");
+      return;
+    }
+    // Call the API to get the explanation
+    const response = await axios.post(
+      "http://localhost:3000/api/ai/explain-code",
+      {
+        code,
+      },
+      { withCredentials: true }
+    );
+    setExplanation(response.data.data.explanation);
   };
 
   return (
@@ -22,7 +43,7 @@ export default function CodeExplainer() {
         />
         <Button onClick={handleExplain}>Explain</Button>
         {explanation && (
-          <div className="bg-neutral-100 dark:bg-neutral-800 p-3 rounded-lg">
+          <div className="bg-neutral-100 text-white dark:bg-neutral-800 p-3 rounded-lg">
             <strong>Explanation:</strong> {explanation}
           </div>
         )}

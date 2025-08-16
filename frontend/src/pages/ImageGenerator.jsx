@@ -1,14 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../componets/DashboardLayout";
 import { Card, Input, Button } from "../componets/ui";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function ImageGenerator() {
+    const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+    useEffect(() => {
+      if (!localStorage.getItem("token")) {
+        navigate("/login");
+      }
+    }, [navigate]);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    if (!prompt.trim()) {
+      alert("Please enter a prompt.");
+      return;
+    }
+
+    const response=await axios.post("http://localhost:3000/api/ai/generate-image",{
+      prompt,
+    },{
+      withCredentials: true
+    })
+    console.log("Image response:", response.data);
+    setImageUrl(response.data.data.imageUrl);
+
     // Fake image generation
-    setImageUrl("https://via.placeholder.com/512x512?text=AI+Image");
+  
   };
 
   return (
@@ -25,7 +46,7 @@ export default function ImageGenerator() {
           <img
             src={imageUrl}
             alt="Generated"
-            className="rounded-lg border border-neutral-200"
+            className="rounded-lg border  border-neutral-200"
           />
         )}
       </Card>

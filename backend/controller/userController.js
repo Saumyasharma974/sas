@@ -42,9 +42,10 @@ export const login = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid email or password");
   }
 
-  generateToken(res, user._id);
+const token = generateToken(res, user._id);
+console.log("Generated token:", token);
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { id: user._id, name: user.name, email }, "Logged in successfully"));
+    .json(new ApiResponse(200,  { id: user._id,email, token }, "Logged in successfully"));
 });

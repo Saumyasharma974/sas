@@ -61,10 +61,10 @@ export const Select = ({ options = [], value, onChange, className = "" }) => (
   <select
     value={value}
     onChange={(e) => onChange(e.target.value)}
-    className={`w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
+    className={`w-full rounded-xl border text-white border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
   >
     {options.map((o) => (
-      <option key={o.value} value={o.value}>
+      <option  key={o.value} value={o.value}>
         {o.label}
       </option>
     ))}
