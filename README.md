@@ -34,4 +34,3 @@ An AI-powered SaaS platform built with **Node.js + Express (Backend)** and **Rea
 
 
 
-Would you like me to also create a **folder structure diagram** (like `frontend/`, `backend/`, `controllers/`, `middlewares/`, etc.) in the README so that contributors instantly know where things go?
