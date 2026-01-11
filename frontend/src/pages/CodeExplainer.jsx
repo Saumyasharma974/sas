@@ -4,31 +4,45 @@ import { Card, Textarea, Button } from "../componets/ui";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import { toast } from "react-toastify";
+
 export default function CodeExplainer() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [explanation, setExplanation] = useState("");
-    useEffect(() => {
-      if (!localStorage.getItem("token")) {
-        navigate("/login");
-      }
-    }, [navigate]);
-  
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
 
   const handleExplain = async () => {
     if (!code.trim()) {
-      alert("Please enter some code to explain.");
+      toast.warn("Please enter some code to explain.");
       return;
     }
-    // Call the API to get the explanation
-    const response = await axios.post(
-      "http://localhost:3000/api/ai/explain-code",
-      {
-        code,
-      },
-      { withCredentials: true }
-    );
-    setExplanation(response.data.data.explanation);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/ai/explain-code",
+        {
+          code,
+        },
+        { withCredentials: true, headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      );
+      setExplanation(response.data.data.explanation);
+      toast.success("Code explained!");
+    } catch (error) {
+      console.error(error);
+      if (error.response && error.response.status === 403) {
+        const msg = error.response.data.message || "";
+        if (msg.includes("Premium")) toast.error("💎 Premium Feature! Please upgrade.");
+        else toast.error("⚠️ Insufficient Credits!");
+      } else {
+        toast.error("Failed to explain code.");
+      }
+    }
   };
 
   return (

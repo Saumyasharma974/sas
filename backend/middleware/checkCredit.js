@@ -2,14 +2,17 @@
 import { ApiError } from "../utils/ApiError.js";
 
 import User from "../models/userModel.js";
-import userModel from "../models/userModel.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const checkCredits = asyncHandler(async (req, res, next) => {
-  const user = await userModel.findById(req.user._id);
-  
-  if (!user || user.credits <= 0) {
-    throw new ApiError(403, "Not enough credits. Please purchase more.");
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (user.credits < 20) {
+    throw new ApiError(403, "Insufficient credits. Minimum 20 credits required per request.");
   }
 
   next();

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../componets/ui";
-import { Zap, Code, Image, Languages,Bug } from "lucide-react";
+import { Zap, Code, Image, Languages, Bug } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,33 +8,37 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [login, setLogin] = React.useState(false);
   // Fake purchase handler
+  // Handle Stripe Purchase
   const handlePurchase = async (plan) => {
-    try {
-      // Fake mapping: each plan gives fixed credits
-      const creditMapping = {
-        Free: 5,
-        Pro: 100,
-        Enterprise: 500,
-      };
+    if (!login) {
+      navigate("/register");
+      return;
+    }
 
-      const response = await axios.post(
-        "http://localhost:3000/api/ai/purchase",
-        {
-          email: localStorage.getItem("email"), // replace with logged-in user email
-          credits: creditMapping[plan],
-          paymentStatus: "success", // simulate payment success
-        },
-        { withCredentials: true }
-      );
+    if (plan === "Free") {
+      navigate("/summarizer");
+      return;
+    }
 
-      alert(
-        `✅ ${plan} plan purchased!\nCredits: ${response.data.data.credits}\nTransaction: ${response.data.data.transactionId}`
-      );
-    } catch (err) {
-      console.error("Purchase error:", err);
-      alert("❌ Purchase failed. Please try again.");
+    if (plan === "Pro") {
+      try {
+        const { data } = await axios.post(
+          "http://localhost:3000/api/ai/create-checkout-session",
+          { plan: "Pro" },
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            withCredentials: true
+          }
+        );
+        // Redirect to Stripe Checkout
+        window.location.href = data.data.url;
+      } catch (err) {
+        console.error("Purchase error:", err);
+        alert("Failed to initiate payment");
+      }
     }
   };
+
   React.useEffect(() => {
     if (localStorage.getItem("token")) {
       setLogin(true);
@@ -45,6 +49,7 @@ export default function LandingPage() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
+    localStorage.removeItem("userId");
     navigate("/login");
     setLogin(false);
   };
@@ -91,8 +96,7 @@ export default function LandingPage() {
           </h1>
           <p className="mt-6 text-lg text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">
             Boost productivity with instant AI-powered summarization,
-            translation, code explanation, and image generation — built for
-            speed and simplicity.
+            writing, coding assistance, and more.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             {login ? (
@@ -127,29 +131,43 @@ export default function LandingPage() {
             {[
               {
                 icon: Zap,
-                title: "Fast",
-                desc: "Lightning-fast AI responses with minimal wait time.",
+                title: "Summarizer",
+                desc: "Concise summaries for any text.",
               },
               {
                 icon: Code,
-                title: "Code Explainer",
-                desc: "Understand complex code in plain English.",
+                title: "Code Assistant",
+                desc: "Explain, debug, and understand code.",
               },
-              {
-                icon: Bug, // use lucide-react's Bug icon
-                title: "Debug",
-                desc: "Find and fix bugs in your code instantly with AI-powered debugging.",
-              }
-              ,
               {
                 icon: Image,
                 title: "Image Generator",
-                desc: "Turn text prompts into stunning visuals.",
+                desc: "Create visuals from text prompts.",
               },
               {
                 icon: Languages,
                 title: "Translator",
-                desc: "Translate text into 50+ languages instantly.",
+                desc: "Translate between languages instantly.",
+              },
+              {
+                icon: Bug,
+                title: "Resume Review",
+                desc: "Get feedback on your resume.",
+              },
+              {
+                icon: Bug,
+                title: "Chat with PDF",
+                desc: "Interactive chat with documents.",
+              },
+              {
+                icon: Bug,
+                title: "Article Writer",
+                desc: "Generate full-length articles.",
+              },
+              {
+                icon: Bug,
+                title: "Blog Titles",
+                desc: "Catchy titles for your posts.",
               },
             ].map(({ icon: Icon, title, desc }, idx) => (
               <div
@@ -179,36 +197,36 @@ export default function LandingPage() {
               {
                 plan: "Free",
                 price: "$0",
-                features: ["5 requests/day", "Basic AI tools"],
+                features: ["Summarizer Tool", "Article Writer Tool", "History Access", "Community Support"],
               },
               {
                 plan: "Pro",
                 price: "$19/mo",
                 features: [
-                  "Unlimited requests",
-                  "All AI tools",
-                  "Priority support",
+                  "Everything in Free",
+                  "Code Explainer & Debugger",
+                  "Image Generator",
+                  "Translator",
+                  "Resume Review",
+                  "Chat with PDF",
+                  "Unlimited Usage"
                 ],
               },
-              {
-                plan: "Enterprise",
-                price: "Custom",
-                features: ["Custom AI models", "Dedicated account manager"],
-              },
+
             ].map(({ plan, price, features }, idx) => (
               <div
                 key={idx}
-                className="p-8 bg-white dark:bg-neutral-900 rounded-xl shadow hover:shadow-lg transition flex flex-col"
+                className={`p-8 rounded-xl shadow hover:shadow-lg transition flex flex-col ${plan === 'Pro' ? 'bg-indigo-900 text-white border-2 border-indigo-500 scale-105' : 'bg-white dark:bg-neutral-900'}`}
               >
                 <h3 className="text-xl font-bold">{plan}</h3>
                 <p className="text-4xl font-extrabold mt-4">{price}</p>
-                <ul className="mt-6 space-y-2 text-neutral-600 dark:text-neutral-400 flex-1">
+                <ul className="mt-6 space-y-2 text-left opacity-90 flex-1">
                   {features.map((f, i) => (
                     <li key={i}>• {f}</li>
                   ))}
                 </ul>
                 <Button
-                  className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700"
+                  className={`w-full mt-6 ${plan === 'Pro' ? 'bg-white text-indigo-900 hover:bg-gray-100' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                   onClick={() => handlePurchase(plan)}
                 >
                   {plan === "Free" ? "Get Started" : "Buy Now"}

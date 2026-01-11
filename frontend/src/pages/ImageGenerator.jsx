@@ -4,32 +4,50 @@ import { Card, Input, Button } from "../componets/ui";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import { toast } from "react-toastify";
+
 export default function ImageGenerator() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-    useEffect(() => {
-      if (!localStorage.getItem("token")) {
-        navigate("/login");
-      }
-    }, [navigate]);
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
-      alert("Please enter a prompt.");
+      toast.warn("Please enter a prompt.");
       return;
     }
 
-    const response=await axios.post("http://localhost:3000/api/ai/generate-image",{
-      prompt,
-    },{
-      withCredentials: true
-    })
-    console.log("Image response:", response.data);
-    setImageUrl(response.data.data.imageUrl);
+    try {
+      const response = await axios.post("http://localhost:3000/api/ai/generate-image", {
+        prompt,
+      }, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      })
+      console.log("Image response:", response.data);
+      setImageUrl(response.data.data.imageUrl);
+      toast.success("Image generated!");
+    } catch (error) {
+      console.error("Image gen error:", error);
+      if (error.response && error.response.status === 403) {
+        const msg = error.response.data.message || "";
+        if (msg.includes("Premium")) {
+          toast.error("💎 Premium Feature! Please upgrade to Pro.");
+        } else if (msg.includes("credits")) {
+          toast.error("⚠️ Insufficient Credits! Please purchase more.");
+        } else {
+          toast.error(msg || "Access Denied");
+        }
+      } else {
+        toast.error("Failed to generate image.");
+      }
+    }
 
-    // Fake image generation
-  
   };
 
   return (

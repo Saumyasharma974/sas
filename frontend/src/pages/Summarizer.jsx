@@ -4,6 +4,8 @@ import { Card, Textarea, Button } from "../componets/ui";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { toast } from "react-toastify";
+
 export default function Summarizer() {
   const navigate = useNavigate();
   const [text, setText] = useState("");
@@ -18,7 +20,7 @@ export default function Summarizer() {
 
   const handleSummarize = () => {
     if (!text.trim()) {
-      alert("Please enter some text to summarize.");
+      toast.warn("Please enter some text to summarize.");
       return;
     }
 
@@ -36,10 +38,15 @@ export default function Summarizer() {
       .then((response) => {
         console.log("Summary response:", response.data.data.summary);
         setSummary(response.data.data.summary);
+        toast.success("Summary generated!");
       })
       .catch((error) => {
         console.error("Error summarizing text:", error);
-        alert("Failed to summarize text. Please try again.");
+        if (error.response && error.response.status === 403) {
+          toast.error("⚠️ Insufficient Credits! Please upgrade or wait.");
+        } else {
+          toast.error("Failed to summarize text. Please try again.");
+        }
       });
   };
 
